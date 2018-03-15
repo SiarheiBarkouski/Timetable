@@ -9,9 +9,9 @@ namespace Timetable.Controllers
     public class LectureController : Controller
     {
         // GET: Lecture
-        public string Index()
+        public ActionResult Index()
         {
-            return "LectureController";
+            return View();
         }
     }
 }
