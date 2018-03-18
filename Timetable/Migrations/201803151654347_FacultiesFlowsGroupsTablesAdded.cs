@@ -31,16 +31,17 @@ namespace Timetable.Migrations
                 .ForeignKey("dbo.Flows", t => t.IdFlow)
                 .Index(t => t.IdFlow)
                 .Index(t => t.IdFaculty);
-            
+
             CreateTable(
-                "dbo.Flows",
-                c => new
+                    "dbo.Flows",
+                    c => new
                     {
                         IdFlow = c.Int(nullable: false, identity: true),
-                        Name = c.String(),
+                        Name = c.String()
                     })
                 .PrimaryKey(t => t.IdFlow);
-            
+
+
         }
         
         public override void Down()

@@ -4,20 +4,21 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Timetable.DbContextModels;
+using Timetable.DbContextModels.Abstract;
 using Timetable.Services;
 
 namespace Timetable.Controllers
 {
     public class StudentController : Controller
     {
-        private readonly TimetableContext _context;
-        public StudentController()
+        private readonly ITimetableRepository _repository;
+        public StudentController(ITimetableRepository repository)
         {
-            _context = new TimetableContext();
+            _repository = repository;
         }
-        public ActionResult Index(string searchString, int? page)
+        public ViewResult Index(string searchString, int? page)
         {
-            var groups = _context.Groups.ToList();
+            var groups = _repository.Groups.ToList();
             if (!String.IsNullOrEmpty(searchString))
             {
                 groups = groups.Where(g => g.NameGroup.Contains(searchString)).ToList();

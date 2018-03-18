@@ -6,50 +6,36 @@
     ViewBag.Title = "Студентам";
 }
 
-<form asp-action="Index" method="get">
-    <div class="form-actions no-color">
-        <p>
-            Введите название группы (или часть, для поиска): <input type="text" name="searchString" value="@ViewData["searchString"]" />
-            <input type="submit" value="Поиск" class="btn btn-default" />
-        </p>
-    </div>
-</form>
+
+@using (Html.BeginForm("Index", "Student", FormMethod.Get, new { @class = "justify-content-center" }))
+{
+    <span class="form-text">Введите название группы (или часть, для поиска):</span>
+    <input type="text" name="searchString" value="@ViewData["searchString"]" class="form-control d-inline-block" />
+    <input type="submit" value="Поиск" class="btn btn-secondary d-inline-block" />
+}
 
 
 <table class="table">
-<tbody>
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                <h4>@(item.NameGroup)</h4>
-            </td>
-            <td>
-                <a  class="btn btn-info">Подгруппа 1</a>
-                <a  class="btn btn-warning">Подгруппа 2</a>
-            </td>
-        </tr>
-    }
-</tbody>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <h4>@(item.NameGroup)</h4>
+                </td>
+                <td>
+                    <a class="btn btn-info">Подгруппа 1</a>
+                    <a class="btn btn-warning">Подгруппа 2</a>
+                </td>
+            </tr>
+        }
+    </tbody>
 </table>
 
 @{
-    var prevDisabled = @Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = @Model.HasNextPage ? "disabled" : "";
+    var prevDisabled = @Model.HasPreviousPage ? "" : "disabled";
+    var nextDisabled = @Model.HasNextPage ? "" : "disabled";
 }
 
-<a  href="Index"
-   asp-route-page="@(Model.PageIndex - 1)"
-   asp-route-searchString="@ViewData["searchString"]"
-   class="btn btn-default @prevDisabled">
-    Предыдущая стр.
-</a>
-
-@*@Html.Action("Index", "Student", new { searchString = ViewData["searchString"], page = Model.PageIndex + 1 });*@
-@Html.RenderAction("Index");
-@*<a href="Index"
-   asp-route-page="@(Model.PageIndex + 1)"
-   asp-route-searchString="@ViewData["searchString"]"
-   class="btn btn-default @nextDisabled">
-    Следующая стр.
-</a>*@
+@Html.ActionLink("Предыдущая стр.", "Index", new { searchString = $"{@ViewData["searchString"]}", page = Model.PageIndex - 1 }, new { @class = $"btn btn-secondary {@prevDisabled}" })
+@Html.ActionLink("Следующая стр.", "Index", new { searchString = $"{@ViewData["searchString"]}", page = Model.PageIndex + 1 }, new { @class = $"btn btn-secondary {@nextDisabled}" })
