@@ -11,5 +11,13 @@ namespace Timetable.DbContextModels.Abstract
         IEnumerable<Faculty> Faculties { get; }
         IEnumerable<Flow> Flows { get; }
         IEnumerable<Group> Groups { get; }
+        IEnumerable<Chair> Chairs { get; }
+        IEnumerable<Classroom> Classrooms { get; }
+        IEnumerable<Lecturer> Lecturers { get; }
+        IEnumerable<SubjectFor> SubjectFors { get; }
+        IEnumerable<Subject> Subjects { get; }
+        IEnumerable<SubjectType> SubjectTypes { get; }
+        IEnumerable<Cancellation> Cancellations { get; }
+        IEnumerable<Record> Records { get; }
     }
 }

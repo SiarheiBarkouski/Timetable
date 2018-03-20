@@ -1,19 +1,18 @@
-﻿@using Timetable.DbContextModels
-@using Timetable.Services
-@model PaginatedList<Group>
+﻿@using Timetable.Models;
+@using Timetable.Services;
+
+@model PaginatedList<LectureViewModel>
 
 @{
-    ViewBag.Title = "Студентам";
+    ViewData["Title"] = "Расписание для преподавателей";
 }
-
-
-@using (Html.BeginForm("Index", "Student", FormMethod.Get, new { @class = "justify-content-center" }))
+<br>
+@using (Html.BeginForm("Index", "Lecturer", FormMethod.Get, new { @class = "justify-content-center" }))
 {
-    <span class="form-text">Введите название группы (или часть, для поиска):</span>
+    <span class="form-text">Введите имя преподавателя(или часть, для поиска) :</span>
     <input type="text" name="searchString" value="@ViewData["searchString"]" class="form-control d-inline-block" />
     <input type="submit" value="Поиск" class="btn btn-secondary d-inline-block" />
 }
-
 
 <table class="table">
     <tbody>
@@ -21,11 +20,10 @@
         {
             <tr>
                 <td>
-                    <h4>@(item.NameGroup)</h4>
+                    <h4>@(item.NameLecturer)</h4>
                 </td>
                 <td>
-                    <a href="@Url.Action("DetailsWeek", "Student", new { subgroup = 1, idgroup = item.IdGroup })" class="btn btn-info">Подгруппа 1</a>
-                    <a href="@Url.Action("DetailsWeek", "Student", new { subgroup = 2, idgroup = item.IdGroup })" class="btn btn-warning">Подгруппа 2</a>
+                    <a href="@Url.Action("DetailsWeek", "Lecturer", new { id = item.IdLecturer })" class="btn btn-info">Показать расписание</a>
                 </td>
             </tr>
         }

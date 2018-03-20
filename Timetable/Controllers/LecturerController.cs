@@ -3,55 +3,55 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Timetable.DbContextModels;
 using Timetable.DbContextModels.Abstract;
 using Timetable.Models;
 using Timetable.Services;
 
 namespace Timetable.Controllers
 {
-    public class StudentController : Controller
+    public class LecturerController : Controller
     {
         private readonly ITimetableRepository _repository;
 
-        public StudentController(ITimetableRepository repository)
+        public LecturerController(ITimetableRepository repository)
         {
             _repository = repository;
         }
-        public ViewResult Index(string searchString, int? page)
+        
+        public ActionResult Index(string searchString, int? page)
         {
-            var groups = _repository.Groups.ToList();
+            ViewData["searchString"] = searchString;
+            var lecturers = (from p in _repository.Lecturers
+                             select new LectureViewModel { IdLecturer = p.IdLecturer, NameLecturer = p.NameLecturer });
+
             if (!String.IsNullOrEmpty(searchString))
             {
-                groups = groups.Where(g => g.NameGroup.Contains(searchString)).ToList();
+                lecturers = lecturers.Where(g => g.NameLecturer.Contains(searchString));
             }
-            return View(PaginatedList<Group>.Create(groups, page ?? 1, 10));
+
+            return View(PaginatedList<LectureViewModel>.Create(lecturers, page ?? 1, 10));
         }
 
-
-        public ActionResult DetailsWeek(int idgroup, int subgroup)
-        {
+        public ActionResult DetailsWeek(int id)
+        {            
             ViewData["currWeek"] = GetCurrentWeek();
-            ViewData["subgroup"] = subgroup;
-            ViewData["groupName"] = (from p in _repository.Groups
-                                     where p.IdGroup == idgroup
-                                     select p.NameGroup).First();
+            ViewData["lectureName"] = (from p in _repository.Lecturers
+                                       where p.IdLecturer == id
+                                       select p.NameLecturer).First();
 
             var records = (from r in _repository.Records
-                           join l in _repository.Lecturers on r.IdLecturer equals l.IdLecturer
+                           join l in _repository.Groups on r.IdGroup equals l.IdGroup
                            join s in _repository.Subjects on r.IdSubject equals s.IdSubject
                            join c in _repository.Classrooms on r.IdClassroom equals c.IdClassroom
-                           where (r.IdGroup == idgroup) &&
-                           new[] { subgroup, 3 }.Contains(r.IdSubjectFor)
-
-                           //    && (r.DateTo >= DateTime.Today && r.DateFrom <= DateTime.Today)
+                           where (r.IdLecturer == id)
+                                                      
                            orderby r.WeekDay, r.SubjOrdinalNumber, r.WeekNumber
-                           select new StudentRecordViewModel
+                           select new LectureRecordViewModel
                            {
                                IdRecord = r.IdRecord,
                                WeekDay = r.WeekDay,
                                WeekNumber = r.WeekNumber,
-                               LectureName = l.NameLecturer,
+                               GroupName = l.NameGroup,
                                SubjectName = s.AbnameSubject,
                                SubjOrdinalNumber = r.SubjOrdinalNumber,
                                Classroom = c.Name + " (к." + c.Building + ")",
@@ -61,8 +61,7 @@ namespace Timetable.Controllers
 
             return View(records);
         }
-
-
+        
         public int GetCurrentWeek()
         {
             var dtNow = new DateTime();
@@ -83,5 +82,6 @@ namespace Timetable.Controllers
             int currentWeek = 1 + (differenceInDays % 28) / 7;
             return currentWeek;
         }
+
     }
 }
